@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <application
+        android:name=".MyApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -12,16 +13,16 @@
         android:theme="@style/Theme.Relayance"
         tools:targetApi="31">
         <activity
-            android:name=".ui.activity.AddCustomerActivity"
-            android:exported="false"
-            android:parentActivityName=".ui.activity.MainActivity" />
+            android:name=".ui.activity.add.AddCustomerActivity"
+            android:exported="true"
+            android:parentActivityName=".ui.activity.main.MainActivity" />
         <activity
-            android:name=".ui.activity.DetailActivity"
-            android:exported="false"
+            android:name=".ui.activity.detail.DetailActivity"
+            android:exported="true"
             android:theme="@style/Theme.Relayance.NoActionBar"
-            android:parentActivityName=".ui.activity.MainActivity" />
+            android:parentActivityName=".ui.activity.main.MainActivity" />
         <activity
-            android:name=".ui.activity.MainActivity"
+            android:name=".ui.activity.main.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

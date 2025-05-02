@@ -1,4 +1,4 @@
-package com.kirabium.relayance.ui.activity
+package com.kirabium.relayance.ui.activity.add
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity

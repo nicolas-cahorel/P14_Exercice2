@@ -39,4 +39,6 @@ class CustomerAdapter(private val customers: List<Customer>, private val onClick
     }
 
     override fun getItemCount() = customers.size
+
+
 }

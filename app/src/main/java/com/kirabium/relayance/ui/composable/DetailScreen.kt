@@ -26,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -83,6 +84,7 @@ fun DetailScreen(
                     ) {
                         Text(
                             text = customer.name,
+                            modifier = Modifier.testTag("CustomerName"),
                             style = MaterialTheme.typography.headlineMedium.copy(
                                 fontSize = 24.sp,
                                 fontWeight = FontWeight.Bold
@@ -91,6 +93,7 @@ fun DetailScreen(
                         Spacer(modifier = Modifier.height(16.dp))
                         Text(
                             text = customer.email,
+                            modifier = Modifier.testTag("CustomerEmail"),
                             style = MaterialTheme.typography.bodyMedium.copy(
                                 fontSize = 16.sp
                             )
@@ -98,6 +101,7 @@ fun DetailScreen(
                         Spacer(modifier = Modifier.height(16.dp))
                         Text(
                             text =  stringResource(id = R.string.created_at, customer.createdAt.toHumanDate()),
+                            modifier = Modifier.testTag("CustomerDate"),
                             style = MaterialTheme.typography.bodyMedium.copy(
                                 fontSize = 16.sp
                             )
@@ -114,6 +118,7 @@ fun DetailScreen(
                         ) {
                             Text(
                                 text = stringResource(id = R.string.new_ribbon),
+                                modifier = Modifier.testTag("NewRibbon"),
                                 color = Color.White,
                                 style = MaterialTheme.typography.bodyMedium.copy(
                                     fontWeight = FontWeight.Bold

@@ -4,6 +4,7 @@ import com.kirabium.relayance.domain.model.Customer
 import java.util.Calendar
 import java.util.Date
 
+//TO DELETE
 
 object DummyData {
     fun generateDate(monthsBack: Int): Date {
