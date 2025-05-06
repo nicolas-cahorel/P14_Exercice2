@@ -4,6 +4,7 @@ import com.kirabium.relayance.domain.model.Customer
 
 sealed class MainActivityState {
 
+    data object Loading : MainActivityState()
 
     data class DisplayCustomers(
         val customers: List<Customer>
@@ -16,7 +17,5 @@ sealed class MainActivityState {
     data class DisplayErrorMessage(
         val stateMessage: String
     ) : MainActivityState()
-
-    data object Loading : MainActivityState()
 
 }
