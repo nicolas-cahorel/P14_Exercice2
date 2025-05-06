@@ -87,6 +87,9 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+
+    sourceSets["androidTest"].assets.srcDirs("src/androidTest/assets")
+
 }
 
 val androidExtension = extensions.getByType<BaseExtension>()
@@ -142,6 +145,11 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
     testImplementation(kotlin("test"))
     androidTestImplementation(libs.androidx.rules)
+
+    androidTestImplementation(libs.cucumber.java)
+    androidTestImplementation(libs.cucumber.junit)
+
+    androidTestImplementation(libs.cucumber.android)
 
     // -------------------------- Dependency Injection (Hilt) --------------------------
     implementation(libs.hilt)

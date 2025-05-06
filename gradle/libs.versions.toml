@@ -18,6 +18,7 @@ espressoContrib = "3.6.1"
 uiTestJunit4Android = "1.7.8"
 
 ksp = "2.1.0-1.0.29"
+cucumber = "7.14.0"
 
 # -------------------------- Dependency Injection (DI) with Hilt --------------------------
 hilt = "2.51.1"                    # Hilt for Dependency Injection
@@ -51,6 +52,11 @@ androidx-ui-test-junit4-android = { group = "androidx.compose.ui", name = "ui-te
 hilt = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hilt" }
 hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
+
+cucumber-android = { module = "io.cucumber:cucumber-android", version.ref = "cucumber" }
+cucumber-java = { module = "io.cucumber:cucumber-java", version.ref = "cucumber" }
+cucumber-junit = { module = "io.cucumber:cucumber-junit", version.ref = "cucumber" }
+
 
 [plugins]
 jacoco = { id = "jacoco" }
