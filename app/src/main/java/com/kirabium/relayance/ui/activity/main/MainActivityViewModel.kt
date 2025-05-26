@@ -20,12 +20,17 @@ class MainActivityViewModel @Inject constructor(
     val mainActivityState: StateFlow<MainActivityState> get() = _mainActivityState
 
     init {
+        fetchData()
+    }
+
+    fun fetchData () {
         viewModelScope.launch {
             customerRepository.getCustomers().collect { result ->
                 _mainActivityState.value = when (result) {
                     is CustomerResult.GetCustomersSuccess -> MainActivityState.DisplayCustomers(result.customers)
                     is CustomerResult.GetCustomersEmpty -> MainActivityState.NoCustomerToDisplay("No customer to display")
                     is CustomerResult.GetCustomersError -> MainActivityState.DisplayErrorMessage(result.errorMessage)
+                    else -> MainActivityState.DisplayErrorMessage("An error has occurred")
                 }
             }
         }

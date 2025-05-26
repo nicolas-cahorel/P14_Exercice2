@@ -10,4 +10,8 @@ sealed class CustomerResult {
 
     data object GetCustomersEmpty : CustomerResult()
 
+    data object AddCustomerSuccess : CustomerResult()
+
+    data class AddCustomerError(val errorMessage: String) : CustomerResult()
+
 }

@@ -1,5 +1,6 @@
 [versions]
 agp = "8.7.3"
+cucumberReporting = "5.7.8"
 kotlin = "2.1.0"
 coreKtx = "1.16.0"
 junit = "4.13.2"
@@ -20,6 +21,12 @@ uiTestJunit4Android = "1.7.8"
 ksp = "2.1.0-1.0.29"
 cucumber = "7.14.0"
 
+mockitoCore = "5.11.0"
+mockitoKotlin = "5.1.0"
+
+turbine = "1.0.0"
+junitJupiter = "5.10.0"
+
 # -------------------------- Dependency Injection (DI) with Hilt --------------------------
 hilt = "2.51.1"                    # Hilt for Dependency Injection
 hiltNavigationCompose = "1.2.0"    # Hilt Navigation for Compose
@@ -27,6 +34,7 @@ hiltNavigationCompose = "1.2.0"    # Hilt Navigation for Compose
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-rules = { module = "androidx.test:rules", version.ref = "rules" }
+cucumber-reporting = { module = "net.masterthought:cucumber-reporting", version.ref = "cucumberReporting" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -57,6 +65,17 @@ cucumber-android = { module = "io.cucumber:cucumber-android", version.ref = "cuc
 cucumber-java = { module = "io.cucumber:cucumber-java", version.ref = "cucumber" }
 cucumber-junit = { module = "io.cucumber:cucumber-junit", version.ref = "cucumber" }
 
+# mockito for tests
+mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockitoCore" }
+mockito-kotlin = { module = "org.mockito.kotlin:mockito-kotlin", version.ref = "mockitoKotlin" }
+
+# turbine for testing flows
+turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
+
+# jupiter
+junit-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junitJupiter"}
+junit-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junitJupiter"}
+junit-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junitJupiter"}
 
 [plugins]
 jacoco = { id = "jacoco" }

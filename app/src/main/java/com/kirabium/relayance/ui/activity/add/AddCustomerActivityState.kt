@@ -4,6 +4,12 @@ sealed class AddCustomerActivityState {
 
     data object Loading : AddCustomerActivityState()
 
-    data object DisplayInputScreen : AddCustomerActivityState()
+    data class InvalidInput(val isNameEmpty: Boolean, val isEmailEmpty: Boolean, val isEmailFormatCorrect: Boolean) : AddCustomerActivityState()
+
+    data object ValidInput : AddCustomerActivityState()
+
+    data object AddCustomerSuccess : AddCustomerActivityState()
+
+    data class AddCustomerError(val errorMessage: String) : AddCustomerActivityState()
 
 }

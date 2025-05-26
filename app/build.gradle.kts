@@ -45,7 +45,10 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "com.kirabium.relayance.CucumberTestRunner"
+//        testInstrumentationRunner="io.cucumber.android.runner.CucumberAndroidJUnitRunner"
+        testInstrumentationRunnerArguments["optionsAnnotationPackage"] = "com.kirabium.relayance"
+
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -150,6 +153,16 @@ dependencies {
     androidTestImplementation(libs.cucumber.junit)
 
     androidTestImplementation(libs.cucumber.android)
+
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.mockito.kotlin)
+    testImplementation(libs.turbine)
+
+    testImplementation(libs.junit.api)
+    testRuntimeOnly(libs.junit.engine)
+    testImplementation(libs.junit.params)
+
+
 
     // -------------------------- Dependency Injection (Hilt) --------------------------
     implementation(libs.hilt)

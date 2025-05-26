@@ -48,6 +48,8 @@ class DetailActivityViewModel @Inject constructor(
                         is CustomerResult.GetCustomersError -> DetailActivityState.DisplayErrorMessage(
                             result.errorMessage
                         )
+
+                        else -> DetailActivityState.DisplayErrorMessage("An error occurred")
                     }
                 }
 

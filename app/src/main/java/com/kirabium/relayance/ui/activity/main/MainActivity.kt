@@ -1,12 +1,17 @@
 package com.kirabium.relayance.ui.activity.main
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kirabium.relayance.databinding.ActivityMainBinding
 import com.kirabium.relayance.ui.activity.add.AddCustomerActivity
@@ -21,6 +26,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var customerAdapter: CustomerAdapter
 
+    private lateinit var addCustomerLauncher: ActivityResultLauncher<Intent>
+
     private val viewModel: MainActivityViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,6 +36,7 @@ class MainActivity : AppCompatActivity() {
         setupBinding()
         setupFab()
         setupCustomerRecyclerView()
+        setupLauncher()
     }
 
     /**
@@ -46,7 +54,7 @@ class MainActivity : AppCompatActivity() {
     private fun setupFab() {
         binding.addCustomerFab.setOnClickListener {
             val intent = Intent(this, AddCustomerActivity::class.java)
-            startActivity(intent)
+            addCustomerLauncher.launch(intent)
         }
     }
 
@@ -57,37 +65,70 @@ class MainActivity : AppCompatActivity() {
         binding.customerRecyclerView.layoutManager = LinearLayoutManager(this)
 
         lifecycleScope.launch {
-            viewModel.mainActivityState.collect { state ->
-                when (state) {
-                    is MainActivityState.Loading -> {
-                         binding.progressBar.visibility = View.VISIBLE
-                    }
-
-                    is MainActivityState.DisplayCustomers -> {
-                         binding.progressBar.visibility = View.GONE
-
-                        customerAdapter = CustomerAdapter(state.customers) { customer ->
-                            val intent = Intent(this@MainActivity, DetailActivity::class.java).apply {
-                                putExtra(DetailActivity.EXTRA_CUSTOMER_ID, customer.id)
-                            }
-                            startActivity(intent)
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.mainActivityState.collect { state ->
+                    when (state) {
+                        is MainActivityState.Loading -> {
+                            binding.progressBar.visibility = View.VISIBLE
                         }
-                        binding.customerRecyclerView.adapter = customerAdapter
-                    }
 
-                    is MainActivityState.NoCustomerToDisplay -> {
-                        binding.progressBar.visibility = View.GONE
-                        Toast.makeText(this@MainActivity, state.stateMessage, Toast.LENGTH_SHORT).show()
-                    }
+                        is MainActivityState.DisplayCustomers -> {
+                            binding.progressBar.visibility = View.GONE
 
-                    is MainActivityState.DisplayErrorMessage -> {
-                        binding.progressBar.visibility = View.GONE
-                        Toast.makeText(this@MainActivity, state.stateMessage, Toast.LENGTH_SHORT).show()
+
+                            // initialiser l'adapter dans le init et seulement mettre a jour les données ici
+
+
+                            customerAdapter = CustomerAdapter(state.customers) { customer ->
+                                val intent =
+                                    Intent(this@MainActivity, DetailActivity::class.java).apply {
+                                        putExtra(DetailActivity.EXTRA_CUSTOMER_ID, customer.id)
+                                    }
+                                startActivity(intent)
+                            }
+                            binding.customerRecyclerView.adapter = customerAdapter
+                        }
+
+                        is MainActivityState.NoCustomerToDisplay -> {
+                            binding.progressBar.visibility = View.GONE
+                            Toast.makeText(
+                                this@MainActivity,
+                                state.stateMessage,
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+
+                        is MainActivityState.DisplayErrorMessage -> {
+                            binding.progressBar.visibility = View.GONE
+                            Toast.makeText(
+                                this@MainActivity,
+                                state.stateMessage,
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                     }
                 }
             }
         }
     }
+
+    private fun setupLauncher() {
+        addCustomerLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+                if (it.resultCode == Activity.RESULT_OK) {
+                    viewModel.fetchData()
+                    it.data?.getStringExtra("RESULT_MESSAGE")?.let { message ->
+                        Toast.makeText(
+                            this@MainActivity,
+                            message,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+
+                }
+            }
+    }
+
 }
 
 

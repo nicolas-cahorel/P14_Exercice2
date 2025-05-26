@@ -19,15 +19,27 @@ class CustomerFakeApi : CustomerApi {
         }
     }
 
+    private var _customers : MutableList<Customer>  = mutableListOf(
+        Customer(1, "Alice Wonderland", "alice@example.com", generateDateMonthsAgo(12)),
+        Customer(2, "Bob Builder", "bob@example.com", generateDateMonthsAgo(6)),
+        Customer(3, "Charlie Chocolate", "charlie@example.com", generateDateMonthsAgo(3)),
+        Customer(4, "Diana Dream", "diana@example.com", generateDateMonthsAgo(1)),
+        Customer(5, "Evan Escape", "evan@example.com", generateDateMonthsAgo(0))
+    )
+
     override fun getCustomers(): Flow<List<Customer>> = flow {
-        val customers = listOf(
-            Customer(1, "Alice Wonderland", "alice@example.com", generateDateMonthsAgo(12)),
-            Customer(2, "Bob Builder", "bob@example.com", generateDateMonthsAgo(6)),
-            Customer(3, "Charlie Chocolate", "charlie@example.com", generateDateMonthsAgo(3)),
-            Customer(4, "Diana Dream", "diana@example.com", generateDateMonthsAgo(1)),
-            Customer(5, "Evan Escape", "evan@example.com", generateDateMonthsAgo(0))
+        emit(_customers)
+    }
+
+    override fun addCustomer(name: String, email: String): Flow<Boolean> = flow {
+        val newCustomer = Customer(
+            name = name,
+            email = email,
+            createdAt = Calendar.getInstance().time,
+            id = _customers.maxOf { it.id } + 1
         )
-        emit(customers)
+        _customers.add(newCustomer)
+        emit(true)
     }
 
 }

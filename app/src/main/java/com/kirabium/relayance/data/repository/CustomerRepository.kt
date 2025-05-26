@@ -26,4 +26,18 @@ class CustomerRepository @Inject constructor(
             }
     }
 
+    fun addCustomer(name: String, email: String): Flow<CustomerResult> {
+        return customerApi.addCustomer(name, email)
+            .map { success ->
+                if (success) {
+                    CustomerResult.AddCustomerSuccess
+                } else {
+                    CustomerResult.AddCustomerError("Failed to add customer")
+                }
+            }
+            .catch { exception ->
+                emit(CustomerResult.AddCustomerError(exception.message ?: "Unknown error"))
+            }
+    }
+
 }

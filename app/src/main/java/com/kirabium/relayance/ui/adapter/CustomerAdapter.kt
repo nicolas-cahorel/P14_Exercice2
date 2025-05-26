@@ -6,7 +6,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.kirabium.relayance.databinding.CustomerItemBinding
 import com.kirabium.relayance.domain.model.Customer
 
-class CustomerAdapter(private val customers: List<Customer>, private val onClick: (Customer) -> Unit) : RecyclerView.Adapter<CustomerAdapter.CustomerViewHolder>() {
+class CustomerAdapter(
+    private var customers: List<Customer>,
+    private val onClick: (Customer) -> Unit
+) : RecyclerView.Adapter<CustomerAdapter.CustomerViewHolder>() {
 
     class CustomerViewHolder(private val binding: CustomerItemBinding, val onClick: (Customer) -> Unit) : RecyclerView.ViewHolder(binding.root) {
         private var currentCustomer: Customer? = null
@@ -39,6 +42,5 @@ class CustomerAdapter(private val customers: List<Customer>, private val onClick
     }
 
     override fun getItemCount() = customers.size
-
 
 }

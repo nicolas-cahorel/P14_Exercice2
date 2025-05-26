@@ -7,4 +7,6 @@ interface CustomerApi {
 
     fun getCustomers() : Flow<List<Customer>>
 
+    fun addCustomer(name: String, email: String) : Flow<Boolean>
+
 }
