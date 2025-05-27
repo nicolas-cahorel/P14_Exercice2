@@ -1,4 +1,6 @@
 import com.android.build.gradle.BaseExtension
+import org.gradle.testing.jacoco.tasks.JacocoReport
+import org.gradle.testing.jacoco.plugins.JacocoTaskExtension
 
 plugins {
     // Android-related plugins
@@ -23,11 +25,32 @@ tasks.withType<Test> {
     }
 }
 
-tasks.register("runInstrumentationTestsWithCoverage") {
-    group = "verification"
-    description = "Exécute les tests instrumentés et génère un rapport de couverture"
+val androidExtension = extensions.getByType<BaseExtension>()
 
-    dependsOn("connectedDebugAndroidTest", "jacocoTestReport")
+val jacocoTestReport by tasks.registering(JacocoReport::class) {
+    dependsOn("testDebugUnitTest", "connectedDebugAndroidTest")
+
+    group = "Reporting"
+    description = "Génère un rapport de couverture Jacoco"
+
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+    }
+
+    val debugTree = fileTree(layout.buildDirectory.dir("tmp/kotlin-classes/debug"))
+    val mainSrc = androidExtension.sourceSets.getByName("main").java.srcDirs
+
+    classDirectories.setFrom(debugTree)
+    sourceDirectories.setFrom(files(mainSrc))
+
+    executionData.setFrom(
+        files(
+            layout.buildDirectory.file("jacoco/testDebugUnitTest.exec"),
+            layout.buildDirectory.file("outputs/code-coverage/connected/coverage.ec")
+        ).filter { it.exists() }
+    )
+
 }
 
 android {
@@ -45,8 +68,12 @@ android {
         versionCode = 1
         versionName = "1.0"
 
+        // For instrumentation test with Cucumber
         testInstrumentationRunner = "com.kirabium.relayance.CucumberTestRunner"
-//        testInstrumentationRunner="io.cucumber.android.runner.CucumberAndroidJUnitRunner"
+
+        // For instrumentation test with JUnit
+//        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
         testInstrumentationRunnerArguments["optionsAnnotationPackage"] = "com.kirabium.relayance"
 
         vectorDrawables {
@@ -56,6 +83,7 @@ android {
 
     buildFeatures {
         viewBinding = true
+        compose = true
     }
 
     buildTypes {
@@ -69,7 +97,7 @@ android {
         debug {
             enableAndroidTestCoverage = true
             enableUnitTestCoverage = true
-            isTestCoverageEnabled = true
+//            isTestCoverageEnabled = true
         }
     }
     compileOptions {
@@ -94,33 +122,6 @@ android {
     sourceSets["androidTest"].assets.srcDirs("src/androidTest/assets")
 
 }
-
-val androidExtension = extensions.getByType<BaseExtension>()
-
-val jacocoTestReport by tasks.registering(JacocoReport::class) {
-    dependsOn("testDebugUnitTest", "createDebugCoverageReport")
-    group = "Reporting"
-    description = "Generate Jacoco coverage reports"
-
-    reports {
-        xml.required.set(true)
-        html.required.set(true)
-    }
-
-    val debugTree = fileTree("${buildDir}/tmp/kotlin-classes/debug")
-    val mainSrc = androidExtension.sourceSets.getByName("main").java.srcDirs
-
-    classDirectories.setFrom(debugTree)
-    sourceDirectories.setFrom(files(mainSrc))
-    executionData.setFrom(
-        files(
-            "${buildDir}/jacoco/testDebugUnitTest.exec",
-            "${buildDir}/outputs/code-coverage/connected/coverage.ec"
-        ).filter { it.exists() }
-    )
-
-}
-
 
 dependencies {
 
