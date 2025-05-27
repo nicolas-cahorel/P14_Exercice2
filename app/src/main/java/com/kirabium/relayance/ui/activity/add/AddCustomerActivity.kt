@@ -101,11 +101,6 @@ class AddCustomerActivity : AppCompatActivity() {
                             intent.putExtra("RESULT_MESSAGE", "Customer added")
                             setResult(Activity.RESULT_OK, intent)
                             finish()
-
-//
-//
-//                            startActivity(Intent(this@AddCustomerActivity, MainActivity::class.java))
-//                            finish()
                         }
 
                         is AddCustomerActivityState.AddCustomerError -> {

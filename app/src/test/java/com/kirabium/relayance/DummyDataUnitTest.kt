@@ -1,9 +1,9 @@
 package com.kirabium.relayance
 
 import com.kirabium.relayance.data.DummyData
+import org.junit.Assert.*
 import org.junit.Test
 import java.util.Calendar
-import org.junit.Assert.*
 
 /**
  * Unit tests for the [DummyData] object.
@@ -23,18 +23,15 @@ class DummyDataUnitTest {
     @Test
     fun test_GenerateDate_ReturnsCorrectPastDate() {
         // ARRANGE
-        val testCases = listOf(0,1,6,12,100)
-
+        val testCases = listOf(0, 1, 6, 12, 100)
         testCases.forEach { monthsBack ->
             val expectedDate = Calendar.getInstance().apply {
                 add(Calendar.MONTH, -monthsBack)
             }
-
             // ACT
             val resultDate = Calendar.getInstance().apply {
                 time = DummyData.generateDate(monthsBack)
             }
-
             // ASSERT
             assertEquals(expectedDate.get(Calendar.YEAR), resultDate.get(Calendar.YEAR))
             assertEquals(expectedDate.get(Calendar.MONTH), resultDate.get(Calendar.MONTH))

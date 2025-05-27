@@ -20,10 +20,8 @@ class DateExtUnitTest {
     fun test_ToHumanDate_ReturnsCorrectFormattedDate() {
         // ARRANGE
         val fakeDate = GregorianCalendar(2025, Calendar.APRIL, 11).time
-
         // ACT
         val convertedDateResult = fakeDate.toHumanDate()
-
         // ASSERT
         assertEquals("11/04/2025", convertedDateResult)
     }
@@ -36,10 +34,8 @@ class DateExtUnitTest {
     fun test_ToHumanDate_ReturnsValidFormat() {
         // ARRANGE
         val fakeDate = Calendar.getInstance().time
-
         // ACT
         val convertedDateResult = fakeDate.toHumanDate()
-
         // ASSERT
         assertTrue(convertedDateResult.matches(Regex("\\d{2}/\\d{2}/\\d{4}")))
     }

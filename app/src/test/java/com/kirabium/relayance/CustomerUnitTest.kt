@@ -23,10 +23,8 @@ class CustomerUnitTest {
         // ARRANGE
         val creationDate = Calendar.getInstance().time // Today
         val fakeCustomer = Customer(2, "Jim Nastyk", "jim.nastyk@test.com", creationDate)
-
         // ACT
         val isCustomerNewResult = fakeCustomer.isNewCustomer()
-
         // ASSERT
         assertTrue(isCustomerNewResult)
     }
@@ -42,10 +40,8 @@ class CustomerUnitTest {
             add(Calendar.MONTH, -2)
         }.time // 2 months ago
         val fakeCustomer = Customer(2, "Jim Nastyk", "jim.nastyk@test.com", creationDate)
-
         // ACT
         val isCustomerNewResult = fakeCustomer.isNewCustomer()
-
         // ASSERT
         assertTrue(isCustomerNewResult)
     }
@@ -61,10 +57,8 @@ class CustomerUnitTest {
             add(Calendar.MONTH, -4)
         }.time // 4 months ago
         val fakeCustomer = Customer(2, "Jim Nastyk", "jim.nastyk@test.com", creationDate)
-
         // ACT
         val isCustomerNewResult = fakeCustomer.isNewCustomer()
-
         // ASSERT
         assertFalse(isCustomerNewResult)
     }

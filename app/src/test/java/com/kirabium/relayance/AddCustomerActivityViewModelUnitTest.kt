@@ -29,7 +29,6 @@ class AddCustomerActivityViewModelUnitTest {
     @Mock
     private lateinit var mockCustomerRepository: CustomerRepository
 
-    @Mock
     private lateinit var viewModel: AddCustomerActivityViewModel
 
 
@@ -50,11 +49,11 @@ class AddCustomerActivityViewModelUnitTest {
         // ARRANGE
         val fakeName = "Alice"
         val fakeEmail = "alice@mail.com"
-        val expectedState = AddCustomerActivityState.ValidInput
         // ACT
         viewModel.onInputChanged(fakeName, fakeEmail)
-        val collectedState = viewModel.addCustomerActivityState.first()
         // ASSERT
+        val expectedState = AddCustomerActivityState.ValidInput
+        val collectedState = viewModel.addCustomerActivityState.first()
         assertEquals(expectedState,collectedState)
     }
 
@@ -63,11 +62,11 @@ class AddCustomerActivityViewModelUnitTest {
         // ARRANGE
         val fakeName = ""
         val fakeEmail = "alice@mail.com"
-        val expectedState = AddCustomerActivityState.InvalidInput(true,false,true)
         // ACT
         viewModel.onInputChanged(fakeName, fakeEmail)
-        val collectedState = viewModel.addCustomerActivityState.first()
         // ASSERT
+        val expectedState = AddCustomerActivityState.InvalidInput(true,false,true)
+        val collectedState = viewModel.addCustomerActivityState.first()
         assertEquals(expectedState,collectedState)
     }
 
@@ -76,11 +75,11 @@ class AddCustomerActivityViewModelUnitTest {
         // ARRANGE
         val fakeName = "Alice"
         val fakeEmail = ""
-        val expectedState = AddCustomerActivityState.InvalidInput(false,true,false)
         // ACT
         viewModel.onInputChanged(fakeName, fakeEmail)
-        val collectedState = viewModel.addCustomerActivityState.first()
         // ASSERT
+        val expectedState = AddCustomerActivityState.InvalidInput(false,true,false)
+        val collectedState = viewModel.addCustomerActivityState.first()
         assertEquals(expectedState,collectedState)
     }
 
@@ -89,11 +88,11 @@ class AddCustomerActivityViewModelUnitTest {
         // ARRANGE
         val fakeName = "Alice"
         val fakeEmail = "alice.mail.com"
-        val expectedState = AddCustomerActivityState.InvalidInput(false,false,false)
         // ACT
         viewModel.onInputChanged(fakeName, fakeEmail)
-        val collectedState = viewModel.addCustomerActivityState.first()
         // ASSERT
+        val expectedState = AddCustomerActivityState.InvalidInput(false,false,false)
+        val collectedState = viewModel.addCustomerActivityState.first()
         assertEquals(expectedState,collectedState)
     }
 
@@ -102,11 +101,11 @@ class AddCustomerActivityViewModelUnitTest {
         // ARRANGE
         val fakeName = ""
         val fakeEmail = ""
-        val expectedState = AddCustomerActivityState.InvalidInput(true,true,false)
         // ACT
         viewModel.onInputChanged(fakeName, fakeEmail)
-        val collectedState = viewModel.addCustomerActivityState.first()
         // ASSERT
+        val expectedState = AddCustomerActivityState.InvalidInput(true,true,false)
+        val collectedState = viewModel.addCustomerActivityState.first()
         assertEquals(expectedState,collectedState)
     }
 
@@ -115,14 +114,14 @@ class AddCustomerActivityViewModelUnitTest {
         // ARRANGE
         val fakeName = "Alice"
         val fakeEmail = "alice@mail.com"
-        val expectedState = AddCustomerActivityState.AddCustomerSuccess
         // Mocking dependencies
         `when`(mockCustomerRepository.addCustomer(fakeName, fakeEmail)).thenReturn(flow {emit(CustomerResult.AddCustomerSuccess)})
         // ACT
         viewModel.addCustomer(fakeName, fakeEmail)
         advanceUntilIdle()
-        val collectedState = viewModel.addCustomerActivityState.first()
         // ASSERT
+        val expectedState = AddCustomerActivityState.AddCustomerSuccess
+        val collectedState = viewModel.addCustomerActivityState.first()
         assertEquals(expectedState, collectedState)
     }
 
@@ -131,14 +130,14 @@ class AddCustomerActivityViewModelUnitTest {
         // ARRANGE
         val fakeName = "Alice"
         val fakeEmail = "alice@mail.com"
-        val expectedState = AddCustomerActivityState.AddCustomerError("Failed to add customer")
         // Mocking dependencies
         `when`(mockCustomerRepository.addCustomer(fakeName, fakeEmail)).thenReturn(flow {emit(CustomerResult.AddCustomerError("Failed to add customer"))})
         // ACT
         viewModel.addCustomer(fakeName, fakeEmail)
         advanceUntilIdle()
-        val collectedState = viewModel.addCustomerActivityState.first()
         // ASSERT
+        val expectedState = AddCustomerActivityState.AddCustomerError("Failed to add customer")
+        val collectedState = viewModel.addCustomerActivityState.first()
         assertEquals(expectedState, collectedState)
     }
 
