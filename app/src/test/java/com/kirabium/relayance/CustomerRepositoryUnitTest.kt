@@ -21,6 +21,13 @@ import org.mockito.Mock
 import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
 
+/**
+ * Unit tests for [CustomerRepository].
+ *
+ * These tests verify the behavior of repository methods when interacting with the
+ * underlying [CustomerApi] mock. They cover successful data retrieval, empty data,
+ * error handling, and customer addition scenarios.
+ */
 @ExperimentalCoroutinesApi
 class CustomerRepositoryUnitTest {
 
@@ -32,6 +39,10 @@ class CustomerRepositoryUnitTest {
     @Mock
     private lateinit var repository: CustomerRepository
 
+    /**
+     * Sets up the test environment by initializing mocks and setting the main dispatcher
+     * to [testDispatcher].
+     */
     @Before
     fun setup() {
         Dispatchers.setMain(testDispatcher)
@@ -39,11 +50,18 @@ class CustomerRepositoryUnitTest {
         repository = CustomerRepository(mockCustomerApi)
     }
 
+    /**
+     * Resets the main dispatcher to the original state after tests.
+     */
     @After
     fun tearDown() {
         Dispatchers.resetMain()
     }
 
+    /**
+     * Tests that [CustomerRepository.getCustomers] returns a success result
+     * with a non-empty list of customers.
+     */
     @Test
     fun getCustomers_ReturnsEmpty() = runTest {
         // ARRANGE
@@ -57,9 +75,13 @@ class CustomerRepositoryUnitTest {
         val collectedResult = repository.getCustomers().first()
         // ASSERT
         val expectedResult = CustomerResult.GetCustomersSuccess(fakeResponse)
-        assertEquals(expectedResult,collectedResult)
+        assertEquals(expectedResult, collectedResult)
     }
 
+    /**
+     * Tests that [CustomerRepository.getCustomers] returns an empty result
+     * when the customer list is empty.
+     */
     @Test
     fun getCustomers_ReturnsSuccess() = runTest {
         // ARRANGE
@@ -70,24 +92,32 @@ class CustomerRepositoryUnitTest {
         val collectedResult = repository.getCustomers().first()
         // ASSERT
         val expectedResult = CustomerResult.GetCustomersEmpty
-        assertEquals(expectedResult,collectedResult)
+        assertEquals(expectedResult, collectedResult)
     }
 
+    /**
+     * Tests that [CustomerRepository.getCustomers] returns an error result
+     * when the underlying API throws an exception.
+     */
     @Test
     fun getCustomers_ReturnsError() = runTest {
         // ARRANGE
-        val fakeResponse = "Exception Message"
+        val fakeExceptionMessage = "Exception Message"
         // Mocking dependencies
         `when`(mockCustomerApi.getCustomers()).thenReturn(
-            kotlinx.coroutines.flow.flow { throw RuntimeException(fakeResponse) }
+            kotlinx.coroutines.flow.flow { throw RuntimeException(fakeExceptionMessage) }
         )
         // ACT
         val collectedResult = repository.getCustomers().first()
         // ASSERT
-        val expectedResult = CustomerResult.GetCustomersError(fakeResponse)
-        assertEquals(expectedResult,collectedResult)
+        val expectedResult = CustomerResult.GetCustomersError(fakeExceptionMessage)
+        assertEquals(expectedResult, collectedResult)
     }
 
+    /**
+     * Tests that [CustomerRepository.addCustomer] returns a success result
+     * when the API successfully adds a customer.
+     */
     @Test
     fun addCustomer_ReturnsSuccess() = runTest {
         // ARRANGE
@@ -100,9 +130,13 @@ class CustomerRepositoryUnitTest {
         val collectedResult = repository.addCustomer(fakeName, fakeEmail).first()
         // ASSERT
         val expectedResult = CustomerResult.AddCustomerSuccess
-        assertEquals(expectedResult,collectedResult)
+        assertEquals(expectedResult, collectedResult)
     }
 
+    /**
+     * Tests that [CustomerRepository.addCustomer] returns an error result
+     * when the API fails to add a customer.
+     */
     @Test
     fun addCustomer_ReturnsError() = runTest {
         // ARRANGE
@@ -115,24 +149,28 @@ class CustomerRepositoryUnitTest {
         val collectedResult = repository.addCustomer(fakeName, fakeEmail).first()
         // ASSERT
         val expectedResult = CustomerResult.AddCustomerError("Failed to add customer")
-        assertEquals(expectedResult,collectedResult)
+        assertEquals(expectedResult, collectedResult)
     }
 
+    /**
+     * Tests that [CustomerRepository.addCustomer] returns an error result
+     * when the API throws an exception during the addition.
+     */
     @Test
     fun addCustomer_ReturnsErrorException() = runTest {
         // ARRANGE
         val fakeName = "Alice"
         val fakeEmail = "alice@mail.com"
-        val fakeResponse = "Exception Message"
+        val fakeExceptionMessage = "Exception Message"
         // Mocking dependencies
         `when`(mockCustomerApi.addCustomer(fakeName, fakeEmail)).thenReturn(
-            kotlinx.coroutines.flow.flow { throw RuntimeException(fakeResponse) }
+            kotlinx.coroutines.flow.flow { throw RuntimeException(fakeExceptionMessage) }
         )
         // ACT
         val collectedResult = repository.addCustomer(fakeName, fakeEmail).first()
         // ASSERT
-        val expectedResult = CustomerResult.AddCustomerError(fakeResponse)
-        assertEquals(expectedResult,collectedResult)
+        val expectedResult = CustomerResult.AddCustomerError(fakeExceptionMessage)
+        assertEquals(expectedResult, collectedResult)
     }
 
 }

@@ -14,6 +14,7 @@ import org.junit.Test
 
 /**
  * Instrumented test class for verifying the UI of [DetailActivity].
+ *
  * It ensures that the customer's name, email, creation date, and the "New" ribbon (if applicable)
  * are properly displayed based on the provided dummy data.
  */
@@ -28,7 +29,7 @@ class DetailActivityInstrumentedTest {
     /**
      * Launches the [DetailActivity] with a known customer ID and verifies:
      * - The "NewRibbon" is displayed for new customers.
-     * - The name, email, and formatted creation date are correctly shown on screen.
+     * - The customer's name, email, and formatted creation date are correctly shown on the screen.
      */
     @Test
     fun test_DetailScreenDisplaysCorrectCustomerInfo() {

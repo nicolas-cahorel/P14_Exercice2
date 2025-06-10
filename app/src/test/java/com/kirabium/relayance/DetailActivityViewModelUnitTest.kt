@@ -25,6 +25,13 @@ import org.mockito.Mock
 import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
 
+/**
+ * Unit tests for [DetailActivityViewModel].
+ *
+ * These tests verify the initialization behavior of the ViewModel,
+ * checking the emitted [DetailActivityState] for different scenarios when
+ * retrieving customer data from the repository.
+ */
 @ExperimentalCoroutinesApi
 class DetailActivityViewModelUnitTest {
 
@@ -37,94 +44,123 @@ class DetailActivityViewModelUnitTest {
 
     private lateinit var viewModel: DetailActivityViewModel
 
+    /**
+     * Setup test environment before each test,
+     * including setting the main dispatcher and initializing mocks.
+     */
     @Before
     fun setup() {
         Dispatchers.setMain(testDispatcher)
         MockitoAnnotations.openMocks(this)
     }
 
+    /**
+     * Reset main dispatcher after each test to avoid interference.
+     */
     @After
     fun tearDown() {
         Dispatchers.resetMain()
     }
 
+    /**
+     * Tests that the ViewModel emits [DetailActivityState.DisplayCustomer] with the correct
+     * customer when the repository returns a successful list containing the requested customer ID.
+     */
     @Test
     fun init_ReturnsDisplayCustomer_GetCustomersSuccess() = runTest {
         // ARRANGE
-        val customerId = 1
-        val fakeCustomer1 = Customer(1, "Alice Wonderland", "alice@example.com", generateDateMonthsAgo(12))
+        val fakeCustomerId = 1
+        val fakeCustomer1 =
+            Customer(1, "Alice Wonderland", "alice@example.com", generateDateMonthsAgo(12))
         val fakeCustomer2 = Customer(2, "Bob Builder", "bob@example.com", generateDateMonthsAgo(6))
-        val fakeCustomers = listOf(fakeCustomer1,fakeCustomer2)
-        val fakeResponse = CustomerResult.GetCustomersSuccess(fakeCustomers)
-        savedStateHandle = SavedStateHandle(mapOf(DetailActivity.EXTRA_CUSTOMER_ID to customerId))
+        val fakeResponse = CustomerResult.GetCustomersSuccess(listOf(fakeCustomer1, fakeCustomer2))
+        savedStateHandle =
+            SavedStateHandle(mapOf(DetailActivity.EXTRA_CUSTOMER_ID to fakeCustomerId))
         // Mocking dependencies
-        `when`(mockCustomerRepository.getCustomers()).thenReturn (flowOf(fakeResponse))
+        `when`(mockCustomerRepository.getCustomers()).thenReturn(flowOf(fakeResponse))
         // ACT
         viewModel = DetailActivityViewModel(mockCustomerRepository, savedStateHandle)
-        // Advances the coroutine to allow the ViewModel to emit the first value
+        // Advances the coroutine to allow the ViewModel to emit the new value
         advanceUntilIdle()
         // ASSERT
         val expectedState = DetailActivityState.DisplayCustomer(fakeCustomer1)
         val collectedState = viewModel.detailActivityState.first()
-        assertEquals(expectedState,collectedState)
+        assertEquals(expectedState, collectedState)
     }
 
+    /**
+     * Tests that the ViewModel emits [DetailActivityState.DisplayErrorMessage]
+     * with "Customer not found" message when the requested customer ID
+     * does not exist in the returned customer list.
+     */
     @Test
     fun init_ReturnsDisplayErrorMessage_GetCustomersSuccess_CustomerNotFound() = runTest {
         // ARRANGE
-        val customerId = 3
-        val fakeCustomer1 = Customer(1, "Alice Wonderland", "alice@example.com", generateDateMonthsAgo(12))
+        val fakeCustomerId = 3
+        val fakeCustomer1 =
+            Customer(1, "Alice Wonderland", "alice@example.com", generateDateMonthsAgo(12))
         val fakeCustomer2 = Customer(2, "Bob Builder", "bob@example.com", generateDateMonthsAgo(6))
-        val fakeCustomers = listOf(fakeCustomer1,fakeCustomer2)
-        val fakeResponse = CustomerResult.GetCustomersSuccess(fakeCustomers)
-        savedStateHandle = SavedStateHandle(mapOf(DetailActivity.EXTRA_CUSTOMER_ID to customerId))
+        val fakeResponse = CustomerResult.GetCustomersSuccess(listOf(fakeCustomer1, fakeCustomer2))
+        savedStateHandle =
+            SavedStateHandle(mapOf(DetailActivity.EXTRA_CUSTOMER_ID to fakeCustomerId))
         // Mocking dependencies
-        `when`(mockCustomerRepository.getCustomers()).thenReturn (flowOf(fakeResponse))
+        `when`(mockCustomerRepository.getCustomers()).thenReturn(flowOf(fakeResponse))
         // ACT
         viewModel = DetailActivityViewModel(mockCustomerRepository, savedStateHandle)
-        // Advances the coroutine to allow the ViewModel to emit the first value
+        // Advances the coroutine to allow the ViewModel to emit the new value
         advanceUntilIdle()
         // ASSERT
         val expectedState = DetailActivityState.DisplayErrorMessage("Customer not found")
         val collectedState = viewModel.detailActivityState.first()
-        assertEquals(expectedState,collectedState)
+        assertEquals(expectedState, collectedState)
     }
 
+    /**
+     * Tests that the ViewModel emits [DetailActivityState.DisplayErrorMessage]
+     * with "No customers available" message when the repository returns
+     * an empty customer list.
+     */
     @Test
     fun init_ReturnsDisplayErrorMessage_getCustomersEmpty() = runTest {
         // ARRANGE
-        val customerId = 1
+        val fakeCustomerId = 1
         val fakeResponse = CustomerResult.GetCustomersEmpty
-        savedStateHandle = SavedStateHandle(mapOf(DetailActivity.EXTRA_CUSTOMER_ID to customerId))
+        savedStateHandle =
+            SavedStateHandle(mapOf(DetailActivity.EXTRA_CUSTOMER_ID to fakeCustomerId))
         // Mocking dependencies
-        `when`(mockCustomerRepository.getCustomers()).thenReturn (flowOf(fakeResponse))
+        `when`(mockCustomerRepository.getCustomers()).thenReturn(flowOf(fakeResponse))
         // ACT
         viewModel = DetailActivityViewModel(mockCustomerRepository, savedStateHandle)
-        // Advances the coroutine to allow the ViewModel to emit the first value
+        // Advances the coroutine to allow the ViewModel to emit the new value
         advanceUntilIdle()
         // ASSERT
         val expectedState = DetailActivityState.DisplayErrorMessage("No customers available")
         val collectedState = viewModel.detailActivityState.first()
-        assertEquals(expectedState,collectedState)
+        assertEquals(expectedState, collectedState)
     }
 
+    /**
+     * Tests that the ViewModel emits [DetailActivityState.DisplayErrorMessage]
+     * with the exception message when the repository returns an error.
+     */
     @Test
     fun init_ReturnsDisplayErrorMessage_getCustomersError() = runTest {
         // ARRANGE
-        val customerId = 1
-        val fakeErrorMessage = "Exception Message"
-        val fakeResponse = CustomerResult.GetCustomersError(fakeErrorMessage)
-        savedStateHandle = SavedStateHandle(mapOf(DetailActivity.EXTRA_CUSTOMER_ID to customerId))
+        val fakeCustomerId = 1
+        val fakeExceptionMessage = "Exception Message"
+        val fakeResponse = CustomerResult.GetCustomersError(fakeExceptionMessage)
+        savedStateHandle =
+            SavedStateHandle(mapOf(DetailActivity.EXTRA_CUSTOMER_ID to fakeCustomerId))
         // Mocking dependencies
-        `when`(mockCustomerRepository.getCustomers()).thenReturn (flowOf(fakeResponse))
+        `when`(mockCustomerRepository.getCustomers()).thenReturn(flowOf(fakeResponse))
         // ACT
         viewModel = DetailActivityViewModel(mockCustomerRepository, savedStateHandle)
-        // Advances the coroutine to allow the ViewModel to emit the first value
+        // Advances the coroutine to allow the ViewModel to emit the new value
         advanceUntilIdle()
         // ASSERT
-        val expectedState = DetailActivityState.DisplayErrorMessage(fakeErrorMessage)
+        val expectedState = DetailActivityState.DisplayErrorMessage(fakeExceptionMessage)
         val collectedState = viewModel.detailActivityState.first()
-        assertEquals(expectedState,collectedState)
+        assertEquals(expectedState, collectedState)
     }
 
 }

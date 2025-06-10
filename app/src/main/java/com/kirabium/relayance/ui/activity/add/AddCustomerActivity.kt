@@ -15,10 +15,14 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.kirabium.relayance.R
 import com.kirabium.relayance.databinding.ActivityAddCustomerBinding
-import com.kirabium.relayance.ui.activity.main.MainActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+/**
+ * Activity for adding a new customer.
+ * Provides input fields for name and email, and displays validation feedback.
+ * Uses a ViewModel to manage UI state and perform business logic.
+ */
 @AndroidEntryPoint
 class AddCustomerActivity : AppCompatActivity() {
 
@@ -26,6 +30,10 @@ class AddCustomerActivity : AppCompatActivity() {
 
     private val viewModel: AddCustomerActivityViewModel by viewModels()
 
+    /**
+     * Called when the activity is starting.
+     * Sets up the toolbar, view binding, listeners, and observers.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupToolbar()
@@ -34,15 +42,26 @@ class AddCustomerActivity : AppCompatActivity() {
         observeViewModel()
     }
 
+    /**
+     * Configures the toolbar to display the "back" button.
+     */
     private fun setupToolbar() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
+
+    /**
+     * Initializes view binding and sets the content view.
+     */
     private fun setupBinding() {
         binding = ActivityAddCustomerBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
     }
 
+    /**
+     * Sets up text change listeners for input fields and a click listener for the save button.
+     * These listeners trigger validation and data submission in the ViewModel.
+     */
     private fun setupListeners() {
         binding.nameEditText.addTextChangedListener { nameText ->
             viewModel.onInputChanged(nameText.toString(), binding.emailEditText.text.toString())
@@ -60,6 +79,10 @@ class AddCustomerActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Observes state changes from the ViewModel and updates the UI accordingly.
+     * Handles loading, validation, error, and success states.
+     */
     private fun observeViewModel() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -67,7 +90,12 @@ class AddCustomerActivity : AppCompatActivity() {
                     when (state) {
                         is AddCustomerActivityState.Loading -> {
                             binding.saveFab.isEnabled = false
-                            binding.saveFab.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(this@AddCustomerActivity, R.color.button_disabled))
+                            binding.saveFab.backgroundTintList = ColorStateList.valueOf(
+                                ContextCompat.getColor(
+                                    this@AddCustomerActivity,
+                                    R.color.button_disabled
+                                )
+                            )
                         }
 
                         is AddCustomerActivityState.ValidInput -> {
@@ -75,14 +103,20 @@ class AddCustomerActivity : AppCompatActivity() {
                             val typedValue = TypedValue()
                             theme.resolveAttribute(android.R.attr.colorPrimary, typedValue, true)
                             val colorPrimary = typedValue.data
-                            binding.saveFab.backgroundTintList = ColorStateList.valueOf(colorPrimary)
+                            binding.saveFab.backgroundTintList =
+                                ColorStateList.valueOf(colorPrimary)
                             binding.nameTextInputLayout.error = null
                             binding.emailTextInputLayout.error = null
                         }
 
                         is AddCustomerActivityState.InvalidInput -> {
                             binding.saveFab.isEnabled = false
-                            binding.saveFab.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(this@AddCustomerActivity, R.color.button_disabled))
+                            binding.saveFab.backgroundTintList = ColorStateList.valueOf(
+                                ContextCompat.getColor(
+                                    this@AddCustomerActivity,
+                                    R.color.button_disabled
+                                )
+                            )
                             if (state.isNameEmpty) {
                                 binding.nameTextInputLayout.error = "name required"
                             } else {
@@ -115,7 +149,5 @@ class AddCustomerActivity : AppCompatActivity() {
             }
         }
     }
-
-
 
 }

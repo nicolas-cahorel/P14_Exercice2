@@ -12,6 +12,15 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * ViewModel responsible for managing the UI state of [DetailActivity].
+ *
+ * It retrieves and exposes the details of a customer identified by an ID passed via [SavedStateHandle].
+ * The state is exposed as a [StateFlow] of [DetailActivityState] to reflect loading, success, or error states.
+ *
+ * @property customerRepository Repository used to fetch customer data.
+ * @property savedStateHandle Provides access to saved state, including the customer ID.
+ */
 @HiltViewModel
 class DetailActivityViewModel @Inject constructor(
     private val customerRepository: CustomerRepository,
@@ -52,8 +61,8 @@ class DetailActivityViewModel @Inject constructor(
                         else -> DetailActivityState.DisplayErrorMessage("An error occurred")
                     }
                 }
-
             }
         }
     }
+
 }

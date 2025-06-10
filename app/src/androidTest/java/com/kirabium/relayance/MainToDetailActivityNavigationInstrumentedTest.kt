@@ -71,7 +71,7 @@ class MainToDetailActivityNavigationInstrumentedTest {
         Intents.intended(
             allOf(
                 hasComponent(DetailActivity::class.java.name),
-                hasExtra("customer_id",1)
+                hasExtra("customer_id", 1)
             )
         )
 

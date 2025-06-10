@@ -20,6 +20,12 @@ import com.kirabium.relayance.ui.adapter.CustomerAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+/**
+ * MainActivity displays a list of customers and allows navigation to add or view customer details.
+ *
+ * It observes the [MainActivityViewModel] state to update the UI accordingly,
+ * handles user interactions such as adding a new customer and selecting a customer from the list.
+ */
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
@@ -40,7 +46,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
-     * Binds the layout using ViewBinding.
+     * Initializes view binding and sets the content view.
      */
     private fun setupBinding() {
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -49,7 +55,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
-     * Configures the FAB to open the AddCustomerActivity.
+     * Configures the Floating Action Button (FAB) to launch [AddCustomerActivity]
+     * when clicked to add a new customer.
      */
     private fun setupFab() {
         binding.addCustomerFab.setOnClickListener {
@@ -59,7 +66,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
-     * Initializes the RecyclerView and its adapter.
+     * Sets up the RecyclerView with a linear layout manager and observes
+     * the ViewModel's state to display customers or appropriate messages.
+     *
+     * The adapter handles item clicks to open the [DetailActivity] for the selected customer.
      */
     private fun setupCustomerRecyclerView() {
         binding.customerRecyclerView.layoutManager = LinearLayoutManager(this)
@@ -74,10 +84,6 @@ class MainActivity : AppCompatActivity() {
 
                         is MainActivityState.DisplayCustomers -> {
                             binding.progressBar.visibility = View.GONE
-
-
-                            // initialiser l'adapter dans le init et seulement mettre a jour les données ici
-
 
                             customerAdapter = CustomerAdapter(state.customers) { customer ->
                                 val intent =
@@ -112,6 +118,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Registers an [ActivityResultLauncher] to handle the result of launching
+     * the [AddCustomerActivity]. On success, refreshes the customer list and
+     * displays any returned message as a Toast.
+     */
     private fun setupLauncher() {
         addCustomerLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -124,7 +135,6 @@ class MainActivity : AppCompatActivity() {
                             Toast.LENGTH_SHORT
                         ).show()
                     }
-
                 }
             }
     }

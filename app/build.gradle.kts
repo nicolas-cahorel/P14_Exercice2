@@ -1,20 +1,15 @@
 import com.android.build.gradle.BaseExtension
-import org.gradle.testing.jacoco.tasks.JacocoReport
-import org.gradle.testing.jacoco.plugins.JacocoTaskExtension
 
 plugins {
-    // Android-related plugins
-    alias(libs.plugins.android.application)
+    // ================================= Android Gradle Plugin ====================================
+    alias(libs.plugins.android.gradle.plugin)
+    // ===================================== Kotlin & KSP =========================================
     alias(libs.plugins.kotlin.android)
-
-    // Dependency injection
-    alias(libs.plugins.dagger.hilt)
-
-    // Kotlin and Compose
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.google.ksp)
-
-    // Code Coverage
+    // =========================================== Hilt ===========================================
+    alias(libs.plugins.dagger.hilt)
+    // ========================================== Jacoco ==========================================
     alias(libs.plugins.jacoco)
 }
 
@@ -28,7 +23,7 @@ tasks.withType<Test> {
 val androidExtension = extensions.getByType<BaseExtension>()
 
 val jacocoTestReport by tasks.registering(JacocoReport::class) {
-    dependsOn("testDebugUnitTest", "connectedDebugAndroidTest")
+//    dependsOn("testDebugUnitTest", "connectedDebugAndroidTest")
 
     group = "Reporting"
     description = "Génère un rapport de couverture Jacoco"
@@ -46,8 +41,9 @@ val jacocoTestReport by tasks.registering(JacocoReport::class) {
 
     executionData.setFrom(
         files(
-            layout.buildDirectory.file("jacoco/testDebugUnitTest.exec"),
-            layout.buildDirectory.file("outputs/code-coverage/connected/coverage.ec")
+            layout.buildDirectory.file("outputs/all_code_coverage/CucumberCoverage.ec"),
+            layout.buildDirectory.file("outputs/all_code_coverage/JUnitCoverage.ec"),
+            layout.buildDirectory.file("outputs/all_code_coverage/UnitTestCoverage.exec")
         ).filter { it.exists() }
     )
 
@@ -69,10 +65,10 @@ android {
         versionName = "1.0"
 
         // For instrumentation test with Cucumber
-        testInstrumentationRunner = "com.kirabium.relayance.CucumberTestRunner"
+//        testInstrumentationRunner = "com.kirabium.relayance.CucumberTestRunner"
 
         // For instrumentation test with JUnit
-//        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         testInstrumentationRunnerArguments["optionsAnnotationPackage"] = "com.kirabium.relayance"
 
@@ -97,7 +93,6 @@ android {
         debug {
             enableAndroidTestCoverage = true
             enableUnitTestCoverage = true
-//            isTestCoverageEnabled = true
         }
     }
     compileOptions {
@@ -125,49 +120,53 @@ android {
 
 dependencies {
 
+    // ================================= AndroidX Core & Lifecycle ================================
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.activity)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.constraintlayout)
+    // ========================================= Compose ==========================================
     implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.material)
-    implementation(libs.androidx.activity)
-    implementation(libs.androidx.constraintlayout)
-    implementation(libs.androidx.espresso.intents)
-    implementation(libs.androidx.espresso.contrib)
-    implementation(libs.androidx.ui.test.junit4.android)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+    // ===================================== Material Design ======================================
+    implementation(libs.material)
+    // ======================================== Unit Tests ========================================
     testImplementation(kotlin("test"))
-    androidTestImplementation(libs.androidx.rules)
-
+    // ================================= Android Instrumented Tests ===============================
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(libs.androidx.ui.test.junit4)
+    implementation(libs.androidx.ui.test.junit4.android)
+    // =========================================== Hilt ===========================================
+    implementation(libs.hilt)
+    implementation(libs.hilt.navigation.compose)
+    ksp(libs.hilt.compiler)
+    // ========================================= Cucumber =========================================
     androidTestImplementation(libs.cucumber.java)
     androidTestImplementation(libs.cucumber.junit)
-
     androidTestImplementation(libs.cucumber.android)
-
+    // =========================================== JUnit ==========================================
+    androidTestImplementation(libs.androidx.junit)
+    testImplementation(libs.junit)
+    testImplementation(libs.junit.api)
+    testImplementation(libs.junit.params)
+    testRuntimeOnly(libs.junit.engine)
+    // ========================================= Espresso =========================================
+    androidTestImplementation(libs.androidx.rules)
+    androidTestImplementation(libs.androidx.espresso.core)
+    implementation(libs.androidx.espresso.intents)
+    implementation(libs.androidx.espresso.contrib)
+    // ========================================== Mockito =========================================
     testImplementation(libs.mockito.core)
     testImplementation(libs.mockito.kotlin)
+    // ========================================== Turbine =========================================
     testImplementation(libs.turbine)
 
-    testImplementation(libs.junit.api)
-    testRuntimeOnly(libs.junit.engine)
-    testImplementation(libs.junit.params)
-
-
-
-    // -------------------------- Dependency Injection (Hilt) --------------------------
-    implementation(libs.hilt)
-    ksp(libs.hilt.compiler)
-    implementation(libs.hilt.navigation.compose)
 
 }

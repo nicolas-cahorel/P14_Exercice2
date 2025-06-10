@@ -42,6 +42,17 @@ import com.kirabium.relayance.extension.DateExt.Companion.toHumanDate
 import com.kirabium.relayance.ui.activity.detail.DetailActivityState
 import java.util.Date
 
+/**
+ * Composable that renders the detail screen showing customer information or relevant UI states.
+ *
+ * This composable handles the following states from [DetailActivityState]:
+ * - Loading: Displays a centered progress indicator.
+ * - DisplayCustomer: Shows customer details inside a card, with a top app bar including a back button.
+ * - DisplayErrorMessage: Shows a Toast message with the error.
+ *
+ * @param detailActivityState The current state of the detail screen.
+ * @param onBackClicked Lambda invoked when the back button is clicked.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailScreen(
@@ -168,7 +179,9 @@ fun DetailScreen(
     }
 }
 
-
+/**
+ * Preview composable for [DetailScreen] to visualize UI during development.
+ */
 @Preview
 @Composable
 private fun DetailScreenPreview() {

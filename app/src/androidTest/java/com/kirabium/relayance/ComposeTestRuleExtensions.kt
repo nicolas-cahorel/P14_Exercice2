@@ -8,8 +8,19 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 
 /**
- * Lance une Activity A dans un ComposeTestRule, avec un Intent custom
- * et exécute [onAfterLaunched] une fois l'Activity démarrée.
+ * Launches an Activity of type [A] within a [ComposeTestRule] environment,
+ * allowing to provide a custom [Intent] and execute code before and after the Activity is started.
+ *
+ * @param A The Activity class to launch.
+ * @param onBefore A lambda executed before launching the Activity. Default is an empty block.
+ * @param intentFactory A lambda to create the [Intent] used to launch the Activity,
+ *                     receiving the application [Context] as parameter.
+ *                     Default creates a simple Intent for Activity [A].
+ * @param onAfterLaunched A lambda with receiver [ComposeTestRule] that is executed
+ *                        after the Activity has been launched and is ready.
+ *
+ * This function launches the Activity inside an [ActivityScenario], ensuring proper lifecycle management.
+ * It is designed for Compose UI tests to start Activities with custom setup and then perform UI assertions or interactions.
  */
 inline fun <reified A : Activity> ComposeTestRule.launch(
     noinline onBefore: () -> Unit = {},
@@ -19,10 +30,10 @@ inline fun <reified A : Activity> ComposeTestRule.launch(
     noinline onAfterLaunched: ComposeTestRule.() -> Unit
 ) {
     onBefore()
-    // Lance l'Activity avec l'Intent fabriqué
+    // Launch the Activity with the created Intent
     ActivityScenario.launch<A>(intentFactory(ApplicationProvider.getApplicationContext()))
         .use {
-            // Dès que l'Activity est prête, on exécute le block Compose
+            // Once the Activity is ready, execute the Compose test block
             onAfterLaunched()
         }
 }
